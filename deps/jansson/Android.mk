@@ -24,11 +24,13 @@ LOCAL_CFLAGS := -DHAVE_STDINT_H \
 				   -DVALGRIND
 
 
-LOCAL_EXPORT_C_INCLUDES :=$(LOCAL_PATH)/src
+LOCAL_EXPORT_C_INCLUDES :=$(LOCAL_PATH)/include
 
 
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH) \
+					$(LOCAL_PATH)/android \
+					$(LOCAL_PATH)/include \
                     $(LOCAL_PATH)/src
 
 
