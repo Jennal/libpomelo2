@@ -24,12 +24,16 @@ extern "C" {
 
 #define PC_MAJOR_VERSION 0
 #define PC_MINOR_VERSION 1
-#define PC_REVISION 5
+#define PC_REVISION 7
+
+#define PC_T(x) PC__T(x)
+#define PC__T(x) #x
+
 #define PC_VERSION_NUM (PC_MAJOR_VERSION * 10000 + PC_MINOR_VERSION * 100 + PC_REVISION)
-#define PC_VERSION_STR ("0.1.5")
+#define PC_VERSION_STR ( PC_T(PC_MAJOR_VERSION) "." PC_T(PC_MINOR_VERSION) "." PC_T(PC_REVISION) )
 
 /**
- * return code
+ * error code
  */
 #define PC_RC_OK 0
 #define PC_RC_ERROR -1
@@ -131,12 +135,19 @@ typedef struct {
     1, /* reconn_exp_backoff */                       \
     0, /* enable_polling */                           \
     NULL, /* local_storage_cb */                      \
-    NULL, /* ex_data */                               \
+    NULL, /* ls_ex_data */                               \
     PC_TR_NAME_UV_TCP /* transport_name */            \
 }
 
 PC_EXPORT int pc_lib_version();
 PC_EXPORT const char* pc_lib_version_str();
+
+/**
+ * If you do use default log callback,
+ * this function will change the level of log out.
+ *
+ * Otherwise, this function does nothing.
+ */
 PC_EXPORT void pc_lib_set_default_log_level(int level);
 
 /**
@@ -251,7 +262,6 @@ PC_EXPORT int pc_notify_with_timeout(pc_client_t* client, const char* route,
 /**
  * Utilities
  */
-
 PC_EXPORT const char* pc_client_state_str(int state);
 PC_EXPORT const char* pc_client_ev_str(int ev_type);
 PC_EXPORT const char* pc_client_rc_str(int rc);
