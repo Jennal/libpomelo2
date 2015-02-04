@@ -121,6 +121,8 @@ int pc_client_init(pc_client_t* client, void* ex_data, const pc_client_config_t*
         }
     }
 
+    client->is_in_poll = 0;
+
     client->magic_num = pc__init_magic_num;
     pc_lib_log(PC_LOG_DEBUG, "pc_client_init - init ok");
     client->state = PC_ST_INITED;
@@ -326,9 +328,6 @@ static void pc__handle_event(pc_client_t* client, pc_event_t* ev)
         ev->data.ev.arg2 = NULL;
     }
 
-    QUEUE_REMOVE(&ev->queue);
-    QUEUE_INIT(&ev->queue);
-
     if (PC_IS_DYN_ALLOC(ev->type)) {
         pc_lib_free(ev);
     } else {
@@ -352,14 +351,31 @@ int pc_client_poll(pc_client_t* client)
     }
 
     pc_mutex_lock(&client->event_mutex);
-    while(!QUEUE_EMPTY(&client->pending_ev_queue)) {
-        q = QUEUE_HEAD(&client->pending_ev_queue);
-        ev = (pc_event_t*) QUEUE_DATA(q, pc_event_t, queue);
 
-        assert((PC_IS_PRE_ALLOC(ev->type) && PC_PRE_ALLOC_IS_BUSY(ev->type)) || PC_IS_DYN_ALLOC(ev->type));
+    /*
+     * `is_in_poll` is used to avoid recursive invocation of pc_client_poll
+     * by identical thread as `pc_mutex_t` is recursive.
+     *
+     * `is_in_poll` can be protected by `event_mutex` too, so no extra mutex
+     * is needed here.
+     */
+    if (!client->is_in_poll) {
+        client->is_in_poll = 1;
 
-        pc__handle_event(client, ev);
+        while(!QUEUE_EMPTY(&client->pending_ev_queue)) {
+            q = QUEUE_HEAD(&client->pending_ev_queue);
+            ev = (pc_event_t*) QUEUE_DATA(q, pc_event_t, queue);
+
+            QUEUE_REMOVE(&ev->queue);
+            QUEUE_INIT(&ev->queue);
+
+            assert((PC_IS_PRE_ALLOC(ev->type) && PC_PRE_ALLOC_IS_BUSY(ev->type)) || PC_IS_DYN_ALLOC(ev->type));
+
+            pc__handle_event(client, ev);
+        }
+        client->is_in_poll = 0;
     }
+
     pc_mutex_unlock(&client->event_mutex);
 
     return PC_RC_OK;

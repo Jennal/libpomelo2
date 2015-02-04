@@ -1,3 +1,6 @@
+# Android
+android-toolchain
+
 # Object files
 *.o
 
@@ -41,6 +44,31 @@ node_modules
 core
 *.pyc
 *.class
-
-
+*~
+*.Makefile
+CMakeFiles
+*.cmake
+*.cxx_parameters
+CMakeCache.*
+Win32
+*.user
+*.dir
+*.sdf
+*.suo
+Release
+*.opensdf
+ipch
+*~
+Debug/*
+demo/moc_*
+demo/ui_*
+*.dat
+*.ncb
+*.vcproj
+Makefile
+out
+tags
+.out
+.swp
+cscope*
 .DS_Store

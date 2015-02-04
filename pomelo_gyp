@@ -1,0 +1,1 @@
+gyp --depth=. pomelo.gyp -Dlibrary=static_library -Dno_tls_support=true -DTO=pc $@

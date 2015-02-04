@@ -1,0 +1,111 @@
+set(UV_DIR ${LIBPOMELO_DIR}/deps/uv)
+
+set(THIRDPARTY_INC
+  ${THIRDPARTY_INC}
+  ${UV_DIR}/src
+  ${UV_DIR}/include
+  ${UV_DIR}/include/uv-private
+)
+
+link_directories(${CMAKE_CURRENT_SOURCE_DIR}/${UV_DIR}/build/Default)
+
+if(APPLE)
+	find_library(LIB_FOUNDATION Foundation)
+	find_library(LIB_CORESERVICES CoreServices)
+	find_library(LIB_APPLICATIONSERVICES ApplicationServices)
+endif()
+
+set(THIRDPARTY_LINK
+  ${THIRDPARTY_LINK}
+  uv
+  ${LIB_FOUNDATION}
+  ${LIB_CORESERVICES}
+  ${LIB_APPLICATIONSERVICES}
+)
+
+# set(THIRDPARTY_SRC
+#   ${THIRDPARTY_SRC}
+#   ${UV_DIR}/src/fs-poll.c
+#   ${UV_DIR}/src/inet.c
+#   ${UV_DIR}/src/uv-common.c
+#   ${UV_DIR}/src/version.c
+# )
+
+# if(WIN32 AND NOT MINGW)
+#   set(THIRDPARTY_INC
+#   	${THIRDPARTY_INC}
+#   	${UV_DIR}/src/win
+#   )
+#   set(THIRDPARTY_SRC
+#     ${THIRDPARTY_SRC}
+#     ${UV_DIR}/src/win/async.c
+#     ${UV_DIR}/src/win/core.c
+#     ${UV_DIR}/src/win/dl.c
+#     ${UV_DIR}/src/win/error.c
+#     ${UV_DIR}/src/win/fs.c
+#     ${UV_DIR}/src/win/fs-event.c
+#     ${UV_DIR}/src/win/getaddrinfo.c
+#     ${UV_DIR}/src/win/handle.c
+#     ${UV_DIR}/src/win/loop-watcher.c
+#     ${UV_DIR}/src/win/pipe.c
+#     ${UV_DIR}/src/win/thread.c
+#     ${UV_DIR}/src/win/poll.c
+#     ${UV_DIR}/src/win/process.c
+#     ${UV_DIR}/src/win/process-stdio.c
+#     ${UV_DIR}/src/win/req.c
+#     ${UV_DIR}/src/win/signal.c
+#     ${UV_DIR}/src/win/stream.c
+#     ${UV_DIR}/src/win/tcp.c
+#     ${UV_DIR}/src/win/tty.c
+#     ${UV_DIR}/src/win/threadpool.c
+#     ${UV_DIR}/src/win/timer.c
+#     ${UV_DIR}/src/win/udp.c
+#     ${UV_DIR}/src/win/util.c
+#     ${UV_DIR}/src/win/winapi.c
+#     ${UV_DIR}/src/win/winsock.c
+#   )
+
+#   set(THIRDPARTY_LINK
+#   	${THIRDPARTY_LINK}
+#   	advapi32
+# 	  iphlpapi
+# 	  psapi
+# 	  shell32
+# 	  ws2_32
+#   )
+# else()
+#   set(THIRDPARTY_INC
+#   	${THIRDPARTY_INC}
+#   	${UV_DIR}/src/unix
+#   )
+
+#   set(THIRDPARTY_SRC
+#     ${THIRDPARTY_SRC}
+#     ${UV_DIR}/src/unix/async.c
+#     ${UV_DIR}/src/unix/core.c
+#     ${UV_DIR}/src/unix/dl.c
+#     ${UV_DIR}/src/unix/error.c
+#     ${UV_DIR}/src/unix/fs.c
+#     ${UV_DIR}/src/unix/getaddrinfo.c
+#     ${UV_DIR}/src/unix/loop.c
+#     ${UV_DIR}/src/unix/loop-watcher.c
+#     ${UV_DIR}/src/unix/pipe.c
+#     ${UV_DIR}/src/unix/poll.c
+#     ${UV_DIR}/src/unix/process.c
+#     ${UV_DIR}/src/unix/signal.c
+#     ${UV_DIR}/src/unix/stream.c
+#     ${UV_DIR}/src/unix/tcp.c
+#     ${UV_DIR}/src/unix/thread.c
+#     ${UV_DIR}/src/unix/threadpool.c
+#     ${UV_DIR}/src/unix/timer.c
+#     ${UV_DIR}/src/unix/tty.c
+#     ${UV_DIR}/src/unix/udp.c
+#     ${UV_DIR}/src/unix/kqueue.c
+#   )
+
+#   set(THIRDPARTY_LINK
+#   	${THIRDPARTY_LINK}
+#   	m
+#   	pthread
+#   )
+# endif()
