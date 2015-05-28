@@ -8,7 +8,12 @@ set(THIRDPARTY_INC
   ${LIBPOMELO_DIR}/include
 )
 
-link_directories(${CMAKE_CURRENT_SOURCE_DIR}/${LIBPOMELO_DIR}/build/Default)
+if(WIN32)
+	link_directories(${CMAKE_CURRENT_SOURCE_DIR}/${LIBPOMELO_DIR}/prebuild/win32)
+else()
+	link_directories(${CMAKE_CURRENT_SOURCE_DIR}/${LIBPOMELO_DIR}/prebuild/mac)
+endif()
+
 
 set(THIRDPARTY_LINK
   ${THIRDPARTY_LINK}

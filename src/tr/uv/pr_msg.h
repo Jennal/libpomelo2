@@ -9,6 +9,7 @@
 #include <jansson.h>
 #include <stdint.h>
 
+#include "pomelo.h"
 #include "pr_pkg.h"
 
 typedef struct tr_uv_tcp_transport_s tr_uv_tcp_transport_t;
@@ -31,7 +32,7 @@ typedef struct {
 } pc_buf_t;
 
 pc_buf_t pc_default_msg_encode(const json_t* route2code, const json_t* client_protos, const pc_msg_t* msg);
-pc_msg_t pc_default_msg_decode(const json_t* code2route, const json_t* server_protos, const pc_buf_t* buf);
+pc_msg_t pc_default_msg_decode(const json_t* code2route, const json_t* server_protos, const pc_buf_t* buf, pc_client_t* client);
 
 pc_buf_t pc_body_json_encode(const json_t *msg);
 json_t *pc_body_json_decode(const char *data, size_t offset, size_t len);

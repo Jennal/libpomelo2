@@ -1,4 +1,4 @@
-/**
+ /**
  * Copyright (c) 2014 NetEase, Inc. and other Pomelo contributors
  * MIT Licensed.
  */
@@ -12,6 +12,7 @@
 
 #include "pr_msg.h"
 #include "tr_uv_tcp_i.h"
+#include "pc_pomelo_i.h"
 
 #define PC_MSG_FLAG_BYTES 1
 #define PC_MSG_ROUTE_LEN_BYTES 1
@@ -152,7 +153,30 @@ error:
     return NULL;
 }
 
-pc_msg_t pc_default_msg_decode(const json_t* code2route, const json_t* server_protos, const pc_buf_t* buf) 
+const char* get_router_by_req_id(pc_client_t* client, unsigned int req_id)
+{
+    
+    
+    QUEUE* q;
+    pc_request_t* req;
+    pc_request_t* target;
+    const char* route;
+    route = NULL;
+    pc_mutex_lock(&client->req_mutex);
+    QUEUE_FOREACH(q, &client->req_queue) {
+        req= (pc_request_t* )QUEUE_DATA(q, pc_common_req_t, queue);
+        if (req->req_id == req_id) {
+            route = req->base.route;
+            break;
+        }
+    }
+    pc_mutex_unlock(&client->req_mutex);
+
+    return route;
+
+}
+
+pc_msg_t pc_default_msg_decode(const json_t* code2route, const json_t* server_protos, const pc_buf_t* buf, pc_client_t* client)
 {
     const char *route_str = NULL;
     const char *origin_route = NULL;
@@ -198,9 +222,24 @@ pc_msg_t pc_default_msg_decode(const json_t* code2route, const json_t* server_pr
         }
 
         msg.route = route_str;
+        
     } else {
-        msg.route = NULL;
+        //msg.route = NULL;
+        
+        origin_route = get_router_by_req_id(client, msg.id);
+        if ( ! origin_route) {
+            msg.id = PC_INVALID_REQ_ID;
+            pc_lib_free(raw_msg);
+            return msg;
+        }
+        
+        route_str = (char* )pc_lib_malloc(strlen(origin_route) + 1);
+        strcpy((char* )route_str, origin_route);
+        msg.route = route_str;
     }
+    
+    
+  
 
     if (PC_MSG_HAS_ROUTE(raw_msg->type) &&  !msg.route) {
         msg.id = PC_INVALID_REQ_ID;
@@ -220,6 +259,7 @@ pc_msg_t pc_default_msg_decode(const json_t* code2route, const json_t* server_pr
             if (pb_def) {
                 // protobuf decode
                 json_msg = pc_body_pb_decode(body.base, 0, body.len, server_protos, pb_def);
+                //pc_lib_log("pb decode, ")
             } else {
                 json_msg = pc_body_json_decode(body.base, 0, body.len);
             }
@@ -229,7 +269,7 @@ pc_msg_t pc_default_msg_decode(const json_t* code2route, const json_t* server_pr
             pc_lib_free((char*)msg.route);
             msg.id = PC_INVALID_REQ_ID;
             msg.route = NULL;
-        } else {
+        } else { 
             data = json_dumps(json_msg, JSON_COMPACT); 
 
             assert(data);
@@ -472,5 +512,5 @@ pc_msg_t pr_default_msg_decoder(tr_uv_tcp_transport_t* tt, const uv_buf_t* buf)
     pb.base = buf->base;
     pb.len = buf->len;
 
-    return pc_default_msg_decode(tt->code_to_route, tt->server_protos, &pb);
+    return pc_default_msg_decode(tt->code_to_route, tt->server_protos, &pb, tt->client);
 }
