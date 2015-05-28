@@ -1,6 +1,5 @@
 set(LIBPOMELO_DIR ${THIRDPARTY_DIR}/libpomelo2)
 
-include(${LIBPOMELO_DIR}/deps/jansson/CMakeLists.pomelo.txt)
 include(${LIBPOMELO_DIR}/deps/uv/CMakeLists.pomelo.txt)
 
 set(THIRDPARTY_INC
