@@ -1,3 +1,26 @@
+2015-05-21 / 0.3.1
+====================
+- fix a bug that leads reconnect failure for tls
+- add null check for client_proto, etc.
+- allow write_async\_cb to be invoked when NOT\_CONN
+- stop check timeout for writing queue
+
+2015-05-15 / 0.3.0
+====================
+- use cjson instead of jansson, cjson is more simple and bug-free
+- some other bugfixes
+
+2015-04-10 / 0.2.1
+====================
+- upgrade libuv to 1.4.2 
+- multi bugfix
+
+2015-03-02 / 0.2.0
+====================
+- compile: enable -fPIC by default
+- cs: add c# binding, Thanks to @hbbalfred
+- bugfix: fix a fatal bug for tcp__handshake_ack
+
 2015-02-02 / 0.1.7
 ====================
 - dummy: fix a double-free bug for dummy transport

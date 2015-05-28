@@ -6,12 +6,12 @@
       'use_sys_openssl%': "true",
       'library%': "static_library",
       'use_sys_uv%': "false",
-      'use_sys_jansson%': "false",
       'no_tls_support%': "false",
       'no_uv_support%': "false",
       'build_pypomelo%': "false",
       'python_header%': "/usr/include/python2.7",
       'build_jpomelo%': "false",
+      'build_cspomelo%': "false",
   },
 
     'target_defaults': {
@@ -51,23 +51,7 @@
       ],    # conditions
 
         'conditions': [
-        ['use_sys_jansson == "false"', {
-          'dependencies': [
-            './deps/jansson/jansson.gyp:jansson',
-          ],
-
-          'include_dirs': [
-            './deps/jansson/src',
-          ]
-        }, {
-          'link_settings': {
-            'libraries': [
-              '-ljansson',
-            ]
-          }
-        }], # use_sys_jansson
-
-      [ 'no_uv_support == "false"', {
+        [ 'no_uv_support == "false"', {
         'conditions' : [
           ['use_sys_uv == "false"', {
             'dependencies': [
@@ -124,7 +108,8 @@
       './src/pc_lib.c',
       './src/pc_trans.c',
       './src/pc_trans_repo.c',
-      './src/tr/dummy/tr_dummy.c',
+      './src/pc_JSON.c',
+      './src/tr/dummy/tr_dummy.c'
       ],
       'conditions': [
         [ 'OS != "win"', {
@@ -133,6 +118,7 @@
             '-Wall',
             '-Wextra',
             '-Wno-unused-parameter',
+            '-fPIC',
           ],
           'defines':[
             '_GNU_SOURCE',
@@ -148,15 +134,15 @@
       ['no_uv_support == "false"', {
         'sources': [
           './src/tr/uv/pr_msg.c',
-        './src/tr/uv/pr_msg_pb.c',
         './src/tr/uv/pr_msg_json.c',
-        './src/tr/uv/pb_util.c',
-        './src/tr/uv/pb_decode.c',
-        './src/tr/uv/pb_encode.c',
         './src/tr/uv/pr_pkg.c',
         './src/tr/uv/tr_uv_tcp.c',
         './src/tr/uv/tr_uv_tcp_i.c',
         './src/tr/uv/tr_uv_tcp_aux.c',
+        './src/tr/uv/pr_msg_pb.c',
+        './src/tr/uv/pb_i.c',
+        './src/tr/uv/pb_decode.c',
+        './src/tr/uv/pb_encode.c',
         ],
         'conditions': [
           ['no_tls_support == "false"', {
@@ -188,6 +174,7 @@
       ],
       'cflags': [
         '-ggdb',
+        '-fPIC',
       ],
       'sources': [
         './test/test-tr_dummy.c',
@@ -205,6 +192,7 @@
       ],
       'cflags': [
         '-ggdb',
+        '-fPIC',
       ],
       'sources': [
         './test/test-tr_tls.c',
@@ -221,6 +209,7 @@
       ],
       'cflags': [
         '-ggdb',
+        '-fPIC',
       ],
       'sources': [
         './test/test-tr_tcp.c',
@@ -243,6 +232,7 @@
           ],
           'cflags': [
             '-ggdb',
+            '-fPIC',
           ],
           'sources': [
             './py/pypomelo.c',
@@ -263,9 +253,31 @@
           ],
           'cflags': [
             '-ggdb',
+            '-fPIC',
           ],
           'sources': [
             './java/com_netease_pomelo_Client.c',
+          ],
+        },],
+
+      }],
+      [
+      'build_cspomelo == "true"', {
+        'targets':[ {
+          'target_name': 'cspomelo',
+          'type': 'shared_library',
+          'dependencies': [
+            'libpomelo2',
+          ],
+          'include_dirs': [
+            './include/',
+          ],
+          'cflags': [
+            '-ggdb',
+            '-fPIC',
+          ],
+          'sources': [
+            './cs/cspomelo.c',
           ],
         },],
 

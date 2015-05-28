@@ -13,6 +13,7 @@ android-toolchain
 *.so
 *.so.*
 *.dylib
+*.bundle
 
 # Executables
 *.exe
@@ -29,7 +30,6 @@ build/
 *.mk
 gyp-mac-tool
 pomelo.Makefile
-deps/jansson/jansson.Makefile
 deps/uv/uv.Makefile
 Makefile
 tags

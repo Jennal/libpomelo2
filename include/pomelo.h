@@ -23,14 +23,16 @@ extern "C" {
 #endif
 
 #define PC_MAJOR_VERSION 0
-#define PC_MINOR_VERSION 1
-#define PC_REVISION 7
+#define PC_MINOR_VERSION 3 
+#define PC_REVISION 1
+#define PC_VERSION_SUFFIX "release"
 
 #define PC_T(x) PC__T(x)
 #define PC__T(x) #x
 
 #define PC_VERSION_NUM (PC_MAJOR_VERSION * 10000 + PC_MINOR_VERSION * 100 + PC_REVISION)
-#define PC_VERSION_STR ( PC_T(PC_MAJOR_VERSION) "." PC_T(PC_MINOR_VERSION) "." PC_T(PC_REVISION) )
+#define PC_VERSION_STR ( PC_T(PC_MAJOR_VERSION) "." PC_T(PC_MINOR_VERSION) \
+        "." PC_T(PC_REVISION) "-" PC_VERSION_SUFFIX )
 
 /**
  * error code
@@ -274,7 +276,7 @@ PC_EXPORT const char* pc_client_rc_str(int rc);
 
 void tr_uv_tls_set_ca_file(const char* ca_file, const char* ca_path);
 
-#endif // uv_tls
+#endif /* uv_tls */
 
 /**
  * Macro implementation
@@ -286,4 +288,4 @@ void tr_uv_tls_set_ca_file(const char* ca_file, const char* ca_path);
 }
 #endif
 
-#endif // PC_POMELO_H 
+#endif /* PC_POMELO_H */
